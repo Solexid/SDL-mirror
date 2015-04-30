@@ -245,8 +245,11 @@ SDL_EGL_ChooseConfig(_THIS)
     EGLint attribs[64];
     EGLint found_configs = 0, value;
     /* 128 seems even nicer here */
+#ifdef EGL_CONFIG_VERYFY
     EGLConfig configs[128];
-    int i, j, best_bitdiff = -1, bitdiff;
+    int j, best_bitdiff = -1, bitdiff;
+#endif
+    int i;
     
     if (!_this->egl_data) {
         /* The EGL library wasn't loaded, SDL_GetError() should have info */
@@ -308,7 +311,11 @@ SDL_EGL_ChooseConfig(_THIS)
    
     if (_this->egl_data->eglChooseConfig(_this->egl_data->egl_display,
         attribs,
+#ifdef EGL_CONFIG_VERIFY
         configs, SDL_arraysize(configs),
+#else
+        &_this->egl_data->egl_config, 1,
+#endif
         &found_configs) == EGL_FALSE ||
         found_configs == 0) {
         return SDL_SetError("Couldn't find matching EGL config");
@@ -316,7 +323,7 @@ SDL_EGL_ChooseConfig(_THIS)
     
     /* eglChooseConfig returns a number of configurations that match or exceed the requested attribs. */
     /* From those, we select the one that matches our requirements more closely via a makeshift algorithm */
-
+#ifdef EGL_CONFIG_VERIFY
     for ( i=0; i<found_configs; i++ ) {
         bitdiff = 0;
         for (j = 0; j < SDL_arraysize(attribs) - 1; j += 2) {
@@ -344,7 +351,7 @@ SDL_EGL_ChooseConfig(_THIS)
            
         if (bitdiff == 0) break; /* we found an exact match! */
     }
-    
+#endif
     return 0;
 }
 
