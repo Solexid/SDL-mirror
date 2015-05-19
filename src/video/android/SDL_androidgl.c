@@ -35,12 +35,29 @@
 
 #include <dlfcn.h>
 
+/*******************************************************************************
+                 Extra Android functions for app
+*******************************************************************************/
+static void (*swapBufferCallback)(void) = NULL;
+
+//Set a callback just before swap, for touch controls overlay
+void SDL_SetSwapBufferCallBack(void (*pt2Func)(void))
+{
+	swapBufferCallback = pt2Func;
+}
+
+
 SDL_EGL_CreateContext_impl(Android)
 SDL_EGL_MakeCurrent_impl(Android)
 
 void
 Android_GLES_SwapWindow(_THIS, SDL_Window * window)
 {
+
+
+	if (swapBufferCallback)
+		swapBufferCallback();
+
     /* The following two calls existed in the original Java code
      * If you happen to have a device that's affected by their removal,
      * please report to Bugzilla. -- Gabriel
