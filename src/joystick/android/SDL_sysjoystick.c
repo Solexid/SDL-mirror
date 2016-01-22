@@ -385,7 +385,7 @@ SDL_SYS_JoystickInit(void)
     hint = SDL_GetHint(SDL_HINT_ACCELEROMETER_AS_JOYSTICK);
     if (!hint || SDL_atoi(hint)) {
         /* Default behavior, accelerometer as joystick */
-        Android_AddJoystick(ANDROID_ACCELEROMETER_DEVICE_ID, ANDROID_ACCELEROMETER_NAME, SDL_TRUE, 0, 3, 0, 0);
+    //    Android_AddJoystick(ANDROID_ACCELEROMETER_DEVICE_ID, ANDROID_ACCELEROMETER_NAME, SDL_TRUE, 0, 3, 0, 0);
     }
    
     return (numjoysticks);
